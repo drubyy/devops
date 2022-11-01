@@ -2,8 +2,8 @@
 
 ## ***Linux aministration***
 ### Basic knowlegde
-- All in linux are files: commands, mouse, keyboard,...
-- Type of files in linux
+1. All in linux are files: commands, mouse, keyboard,...
+2. Type of files in linux
 
 File type | First character in file listing | Description
 --- | :---: | ---
@@ -13,6 +13,54 @@ Link | l | A shortcut that points to the location of the actual file
 Special file | c | Mechanism used for input and output, such as files in /dev
 Socket | s | A special file that provides inter-process networking protected by the file system's access control
 Pipe | p | A special file that allows processes to communicate with each other without using network socket semantics
+
+3. File permission
+> Structure: filetype + user's permission + group's permission + other's permission
+
+Symbol | Description
+--- | ---
+r | Permission to read a file or list a directory's content
+w | Permission to write to a file or create, remove files from a directory
+x | Permission to execute a program or change into directory and do a long listing of the directory
+\- | No permission
+
+sample:
+  ```
+  $ ls -l /bin/login
+  -rwxr-x--- 1 root root 19080 Apr 1 18:26 /bin/login
+  ```
+
+  + "-" => file type: file
+  + "rwx" => user's permission: read + write + execute
+  + "r-x" => group's permission: read + execute
+  + "---" => other's permission: not have any permission
+  + 1 => user's id
+  + root => user: root
+  + root => group: root
+
+> Add / remove / set permission by symbol: target (+ | -) symbol_permission
+- Sample:
+  ```
+  $ chmod o+x /tmp/sample.txt => Add permission x for other's permission
+  $ chmod g-w /tmp/sample.txt => Remove permission w from group's permission
+  $ chmod u=rwx /tmp/sample.txt => Set full permission for user owner file
+  ```
+> Change permission by numeric
+- Permissions are calculated by:
+  - 4 (r)
+  - 2 (w)
+  - 1 (x)
+
+- Sample
+  ```
+  $ chmod 640 /tmp/sample.txt
+  => user's permission: rw-
+  => group's permission: -w-
+  => other's permission: ---
+
+  $ ls -l /tmp/sample.txt
+  -rw--w---- 1 drubyy devops 19080 Apr 1 18:26 /tmp/sample.txt
+  ```
 
 #### Most used Linux distros currently:
 - RPM based: RHEL & Centos
@@ -87,9 +135,9 @@ sudo apt install vim > /tmp/server.log | remove all data in file if exist and wr
 
 ## ***Vim***
 - 3 modes:
- + Commands
- + Extended command
- + Insert
+  - Commands
+  - Extended command
+  - Insert
 
 Command | Command mode | Extended command mode | Description
 --- | :---: | :---: | ---
@@ -121,3 +169,22 @@ se nu | | x | To set the line numbers to the file
 se nonu | | x | To Remove the set line numbers
 w | | x | To Save the changes
 
+### systemctl
+#### Make software run after reboot
+```
+$ systemctl start package_name
+$ systemctl enable package_name
+```
+
+#### Checking status
+```
+$ systemctl status package_name
+$ systemctl is-active package_name
+$ systemctl is-enable package_name
+```
+
+#### tips kill PID
+```
+ps aux | grep "package_name" | awk '{print $2}' | xargs kill -9
+=> kill processes of package_name
+```
